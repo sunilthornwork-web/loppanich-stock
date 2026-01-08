@@ -29,11 +29,15 @@
   <div id="adminDashboardSheet" class="sheet"></div>
 
   <!-- ================= SCRIPTS ================= -->
-  <!-- 1️⃣ STATE (ต้องมาก่อน) -->
-  <script src="state.js"></script>
 
-  <!-- 2️⃣ MAIN LOGIC -->
-  <script src="main.js"></script>
+<!-- 1️⃣ GLOBAL STATE (ต้องมาก่อนทุกอย่าง) -->
+<script src="state.js"></script>
+
+<!-- 2️⃣ SESSION / AUTH / GUARD -->
+<script src="core/session.js"></script>
+
+<!-- 3️⃣ MAIN LOGIC (UI + API + FLOW) -->
+<script src="main.js"></script>
 
 </body>
 </html>
