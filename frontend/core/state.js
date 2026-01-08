@@ -1,55 +1,60 @@
-/* =========================================================
-   GLOBAL STATE (SINGLE SOURCE OF TRUTH)
-   Phase 4 – Frontend Architecture
-   ---------------------------------------------------------
-   ⚠️ RULES
-   - ห้าม mutate state แบบสุ่ม
-   - ใช้ state กลางตัวนี้เท่านั้น
-   - import ใช้ร่วมกันทุก module
-========================================================= */
+// ================================
+// GLOBAL APP STATE (SAFE VERSION)
+// ================================
 
-const state = {
-  /* ================= VIEW MODE ================= */
-  mode: "viewer",              // "viewer" | "admin"
-  search: "",                  // search keyword (lowercase)
+window.AppState = {
+  // ===== APP MODE =====
+  mode: "viewer", // "viewer" | "admin"
 
-  /* ================= PRODUCT ================= */
-  products: [],                // product list (from API)
-  selectedProduct: null,       // product object
-  qty: 1,                      // qty selector
+  // ===== VIEWER =====
+  search: "",
+  products: [],
+  selectedProduct: null,
+  qty: 1,
+  cart: [],
+  lastOrder: null,
+  isSubmitting: false,
 
-  /* ================= CART ================= */
-  cart: [],                    // [{ productId, name, price, qty }]
-  lastOrder: null,             // { orderId, items, total, createdAt }
+  // ===== ADMIN =====
+  admin: {
+    loggedIn: false,
+    user: null,
+    token: null,
+    expiredAt: null,
 
-  /* ================= UI STATE ================= */
-  isSubmitting: false,         // global submit lock
-
-  ui: {
-    overlayCount: 0            // overlay manager counter
+    orders: [],
+    selectedOrder: null,
+    logs: []
   },
 
-  /* ================= ADMIN ================= */
-  admin: {
-    loggedIn: false,           // auth state
-    user: null,                // username
-    token: null,               // session token
-    expiredAt: null,           // Date / string
-
-    orders: [],                // admin orders
-    selectedOrder: null,       // active order
-    logs: []                   // stock logs
+  // ===== UI CONTROL =====
+  ui: {
+    overlayCount: 0,
+    backdropLocked: false
   }
 };
 
-/* =========================================================
-   DEV SAFETY (OPTIONAL)
-   ---------------------------------------------------------
-   ป้องกันการ overwrite state ทั้งก้อนโดยไม่ตั้งใจ
-   (ยังอนุญาตให้แก้ไข property ข้างในได้)
-========================================================= */
+// ================================
+// STATE HELPERS (อ่านง่าย ปลอดภัย)
+// ================================
 
-// Object.seal(state); // 🔒 เปิดได้ถ้าต้องการ strict มากขึ้น
+window.getState = () => window.AppState;
 
-export default state;
+window.resetAdminState = () => {
+  AppState.admin = {
+    loggedIn: false,
+    user: null,
+    token: null,
+    expiredAt: null,
+    orders: [],
+    selectedOrder: null,
+    logs: []
+  };
+};
 
+window.resetViewerState = () => {
+  AppState.mode = "viewer";
+  AppState.search = "";
+  AppState.selectedProduct = null;
+  AppState.qty = 1;
+};
